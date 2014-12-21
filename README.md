@@ -1,8 +1,7 @@
-calciobot
-=========
+# calciobot by ubercl0ud
 Simple reddit bot to update the sidebar with Serie A live table, and top scorers.  Nothing really fancy. 
 
-# How to
+## How to
 * Copy config.ini.default to config.ini
 * Set the following:
 ```
@@ -12,7 +11,7 @@ subreddit: <your subreddit without the /r/>
 userAgent: Soccer_Bot_S/v1.1.0 by <your bot's username>
 ```
 
-# Example
+## Example
 ```
 username: calciobot
 password: somepassword
@@ -20,8 +19,8 @@ subreddit: calciobot
 userAgent: Soccer_Bot_S/v1.1.0 by calciobot
 ```
 
-# Notes
+## Notes
 * Note that the userAgent **MUST** be changed or it will go against reddit's TOS. 
 
-# Credits
+## Credits
 This script was heavily modified from the hockey subreddit from HockeyBotS
