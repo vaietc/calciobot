@@ -5,6 +5,7 @@ import time
 import urllib2
 import HTMLParser
 import praw
+import sys
 from bs4 import BeautifulSoup
 
 
@@ -19,7 +20,12 @@ class Soccer(object):
         divisions = ['Atlantic', 'Metropolitan', 'Central', 'Pacific']
         self.username = Config.get("userinfo", "username")
         self.password = Config.get("userinfo", "password")
-        self.subreddit = Config.get("userinfo", "subreddit")
+	if len(sys.argv) > 1:
+		self.subreddit = sys.argv[1]
+	else:
+		self.subreddit = Config.get("userinfo", "subreddit")
+	
+	print self.subreddit
         self.userAgent = Config.get("userinfo", "userAgent")
         self.fix = 'y'
 
