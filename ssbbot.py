@@ -301,9 +301,9 @@ class Soccer(object):
         #Compiling the table
         body = "\n|%s|" % (str(data_hash['fixtures'][0]['date']))
         body += "\n|:--|"
-        body += "\n|%s - %s vs. %s |" % (data_hash['fixtures'][0]['time'], data_hash['fixtures'][0]['team_l'], data_hash['fixtures'][0]['team_r'])
-        body += "\n|%s - %s vs. %s |" % (data_hash['fixtures'][1]['time'], data_hash['fixtures'][1]['team_l'], data_hash['fixtures'][1]['team_r'])
-        body += "\n|%s - %s vs. %s |" % (data_hash['fixtures'][2]['time'], data_hash['fixtures'][2]['team_l'], data_hash['fixtures'][2]['team_r'])
+        body += "\n|%s (UTC) - %s vs. %s |" % (data_hash['fixtures'][0]['time'], data_hash['fixtures'][0]['team_l'], data_hash['fixtures'][0]['team_r'])
+        body += "\n|%s (UTC) - %s vs. %s |" % (data_hash['fixtures'][1]['time'], data_hash['fixtures'][1]['team_l'], data_hash['fixtures'][1]['team_r'])
+        body += "\n|%s (UTC) - %s vs. %s |" % (data_hash['fixtures'][2]['time'], data_hash['fixtures'][2]['team_l'], data_hash['fixtures'][2]['team_r'])
         body += "\n\n[Source](%s)" % data_hash['source']
         print body
         return body
