@@ -31,39 +31,37 @@ class Soccer(object):
         self.fix = 'y'
 
     def scrape_standings(self):
-        link = 'http://www.whatsthescore.com/football/italy/serie-a/table.html'
+        #link = 'http://www.whatsthescore.com/football/italy/serie-a/table.html'
+        link = 'http://www.livescore.com/soccer/italy/serie-a/'
         w = urllib2.urlopen(link)
         soup = BeautifulSoup(w.read())
 
         #Find the division table
-        for table in soup.findAll('table', { "class" : "base-listing standing-listing standing-points-live opened with-standing-points-diff" }):
-            rawdata = table
-	
+	rawdata = []
+        for t in soup.findAll('div', { "class" : "ltable table" }):
+	    live_table = []
+            for table in t.findAll(attrs={'class': re.compile(r"row-gray\b.*")}):
+                result = {}
+                rawdata.append(table)
+                result['team'] = table.findAll('div')[1].text
+                result['played'] = table.findAll('div')[2].text
+                result['wins'] = table.findAll('div')[3].text
+                result['draws'] = table.findAll('div')[4].text
+                result['loss'] = table.findAll('div')[5].text
+                result['gd'] = table.findAll('div')[8].text
+                result['pts'] = table.findAll('div')[9].text
+#                print "%s %s %s %s %s %s %s" % (result['team'], result['played'], result['wins'], result['draws'], result['loss'], result['gd'], result['pts'])
+                live_table.append(result)
+
 
         vlist = []
         vlist1 = []
         vlist2 = []
 
-        #Make list of cells within a list of rows
-        rawdata_list = [tr.findAll('td') for tr in rawdata.findAll('tr')]
-        #Text only version of rawdata_list
-        for row in rawdata_list:
-            vlist.append([cell.text for cell in row])
-        #Get rid of problematic characters
-        for i in vlist:
-            vlist1.append([val.replace(u'\xa0', u' ') for val in i])
-
-        for i in vlist1:
-            vlist2.append([val.replace(u'\xe9', u'e') for val in i])
-
-        for i in vlist1:
-            vlist2.append([val.replace(u'\xf3', u'o') for val in i])
-
         w.close()
         data = {}
         data['source'] = link
-        data['data'] = vlist2
-	print data
+        data['data'] = live_table
         return data
 
 
@@ -71,29 +69,27 @@ class Soccer(object):
         #Compiling the table
         body = "\n|Pos|Team|P|W|D|L|GD|Pts|"
         body += "\n|:--:|:--|:--:|:--:|:--:|:--:|:--:|:--:|"
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][3][0], data_hash['data'][3][4], data_hash['data'][3][7], data_hash['data'][3][8], data_hash['data'][3][9], data_hash['data'][3][10], data_hash['data'][3][13], data_hash['data'][3][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][4][0], data_hash['data'][4][4], data_hash['data'][4][7], data_hash['data'][4][8], data_hash['data'][4][9], data_hash['data'][4][10], data_hash['data'][4][13], data_hash['data'][4][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][5][0], data_hash['data'][5][4], data_hash['data'][5][7], data_hash['data'][5][8], data_hash['data'][5][9], data_hash['data'][5][10], data_hash['data'][5][13], data_hash['data'][5][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][6][0], data_hash['data'][6][4], data_hash['data'][6][7], data_hash['data'][6][8], data_hash['data'][6][9], data_hash['data'][6][10], data_hash['data'][6][13], data_hash['data'][6][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][7][0], data_hash['data'][7][4], data_hash['data'][7][7], data_hash['data'][7][8], data_hash['data'][7][9], data_hash['data'][7][10], data_hash['data'][7][13], data_hash['data'][7][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][8][0], data_hash['data'][8][4], data_hash['data'][8][7], data_hash['data'][8][8], data_hash['data'][8][9], data_hash['data'][8][10], data_hash['data'][8][13], data_hash['data'][8][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][9][0], data_hash['data'][9][4], data_hash['data'][9][7], data_hash['data'][9][8], data_hash['data'][9][9], data_hash['data'][9][10], data_hash['data'][9][13], data_hash['data'][9][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][10][0], data_hash['data'][10][4], data_hash['data'][10][7], data_hash['data'][10][8], data_hash['data'][10][9], data_hash['data'][10][10], data_hash['data'][10][13], data_hash['data'][10][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][11][0], data_hash['data'][11][4], data_hash['data'][11][7], data_hash['data'][11][8], data_hash['data'][11][9], data_hash['data'][11][10], data_hash['data'][11][13], data_hash['data'][11][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][12][0], data_hash['data'][12][4], data_hash['data'][12][7], data_hash['data'][12][8], data_hash['data'][12][9], data_hash['data'][12][10], data_hash['data'][12][13], data_hash['data'][12][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][13][0], data_hash['data'][13][4], data_hash['data'][13][7], data_hash['data'][13][8], data_hash['data'][13][9], data_hash['data'][13][10], data_hash['data'][13][13], data_hash['data'][13][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][14][0], data_hash['data'][14][4], data_hash['data'][14][7], data_hash['data'][14][8], data_hash['data'][14][9], data_hash['data'][14][10], data_hash['data'][14][13], data_hash['data'][14][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][15][0], data_hash['data'][15][4], data_hash['data'][15][7], data_hash['data'][15][8], data_hash['data'][15][9], data_hash['data'][15][10], data_hash['data'][15][13], data_hash['data'][15][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][16][0], data_hash['data'][16][4], data_hash['data'][16][7], data_hash['data'][16][8], data_hash['data'][16][9], data_hash['data'][16][10], data_hash['data'][16][13], data_hash['data'][16][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][17][0], data_hash['data'][17][4], data_hash['data'][17][7], data_hash['data'][17][8], data_hash['data'][17][9], data_hash['data'][17][10], data_hash['data'][17][13], data_hash['data'][17][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][18][0], data_hash['data'][18][4], data_hash['data'][18][7], data_hash['data'][18][8], data_hash['data'][18][9], data_hash['data'][18][10], data_hash['data'][18][13], data_hash['data'][18][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][19][0], data_hash['data'][19][4], data_hash['data'][19][7], data_hash['data'][19][8], data_hash['data'][19][9], data_hash['data'][19][10], data_hash['data'][19][13], data_hash['data'][19][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][20][0], data_hash['data'][20][4], data_hash['data'][20][7], data_hash['data'][20][8], data_hash['data'][20][9], data_hash['data'][20][10], data_hash['data'][20][13], data_hash['data'][20][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][21][0], data_hash['data'][21][4], data_hash['data'][21][7], data_hash['data'][21][8], data_hash['data'][21][9], data_hash['data'][21][10], data_hash['data'][21][13], data_hash['data'][21][6])
-        body += "\n|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|".format(data_hash['data'][22][0], data_hash['data'][22][4], data_hash['data'][22][7], data_hash['data'][22][8], data_hash['data'][22][9], data_hash['data'][22][10], data_hash['data'][22][13], data_hash['data'][22][6])
-
+        body += "\n|1|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][1]['team'], data_hash['data'][1]['played'], data_hash['data'][1]['wins'], data_hash['data'][1]['draws'], data_hash['data'][1]['loss'], data_hash['data'][1]['gd'], data_hash['data'][1]['pts'])
+        body += "\n|2|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][2]['team'], data_hash['data'][2]['played'], data_hash['data'][2]['wins'], data_hash['data'][2]['draws'], data_hash['data'][2]['loss'], data_hash['data'][2]['gd'], data_hash['data'][2]['pts'])
+        body += "\n|3|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][3]['team'], data_hash['data'][3]['played'], data_hash['data'][3]['wins'], data_hash['data'][3]['draws'], data_hash['data'][3]['loss'], data_hash['data'][3]['gd'], data_hash['data'][3]['pts'])
+        body += "\n|4|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][4]['team'], data_hash['data'][4]['played'], data_hash['data'][4]['wins'], data_hash['data'][4]['draws'], data_hash['data'][4]['loss'], data_hash['data'][4]['gd'], data_hash['data'][4]['pts'])
+        body += "\n|5|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][5]['team'], data_hash['data'][5]['played'], data_hash['data'][5]['wins'], data_hash['data'][5]['draws'], data_hash['data'][5]['loss'], data_hash['data'][5]['gd'], data_hash['data'][5]['pts'])
+        body += "\n|6|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][6]['team'], data_hash['data'][6]['played'], data_hash['data'][6]['wins'], data_hash['data'][6]['draws'], data_hash['data'][6]['loss'], data_hash['data'][6]['gd'], data_hash['data'][6]['pts'])
+        body += "\n|7|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][7]['team'], data_hash['data'][7]['played'], data_hash['data'][7]['wins'], data_hash['data'][7]['draws'], data_hash['data'][7]['loss'], data_hash['data'][7]['gd'], data_hash['data'][7]['pts'])
+        body += "\n|8|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][8]['team'], data_hash['data'][8]['played'], data_hash['data'][8]['wins'], data_hash['data'][8]['draws'], data_hash['data'][8]['loss'], data_hash['data'][8]['gd'], data_hash['data'][8]['pts'])
+        body += "\n|9|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][9]['team'], data_hash['data'][9]['played'], data_hash['data'][9]['wins'], data_hash['data'][9]['draws'], data_hash['data'][9]['loss'], data_hash['data'][9]['gd'], data_hash['data'][9]['pts'])
+        body += "\n|10|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][10]['team'], data_hash['data'][10]['played'], data_hash['data'][10]['wins'], data_hash['data'][10]['draws'], data_hash['data'][10]['loss'], data_hash['data'][10]['gd'], data_hash['data'][10]['pts'])
+        body += "\n|11|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][11]['team'], data_hash['data'][11]['played'], data_hash['data'][11]['wins'], data_hash['data'][11]['draws'], data_hash['data'][11]['loss'], data_hash['data'][11]['gd'], data_hash['data'][11]['pts'])
+        body += "\n|12|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][12]['team'], data_hash['data'][12]['played'], data_hash['data'][12]['wins'], data_hash['data'][12]['draws'], data_hash['data'][12]['loss'], data_hash['data'][12]['gd'], data_hash['data'][12]['pts'])
+        body += "\n|13|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][13]['team'], data_hash['data'][13]['played'], data_hash['data'][13]['wins'], data_hash['data'][13]['draws'], data_hash['data'][13]['loss'], data_hash['data'][13]['gd'], data_hash['data'][13]['pts'])
+        body += "\n|14|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][14]['team'], data_hash['data'][14]['played'], data_hash['data'][14]['wins'], data_hash['data'][14]['draws'], data_hash['data'][14]['loss'], data_hash['data'][14]['gd'], data_hash['data'][14]['pts'])
+        body += "\n|15|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][15]['team'], data_hash['data'][15]['played'], data_hash['data'][15]['wins'], data_hash['data'][15]['draws'], data_hash['data'][15]['loss'], data_hash['data'][15]['gd'], data_hash['data'][15]['pts'])
+        body += "\n|16|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][16]['team'], data_hash['data'][16]['played'], data_hash['data'][16]['wins'], data_hash['data'][16]['draws'], data_hash['data'][16]['loss'], data_hash['data'][16]['gd'], data_hash['data'][16]['pts'])
+        body += "\n|17|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][17]['team'], data_hash['data'][17]['played'], data_hash['data'][17]['wins'], data_hash['data'][17]['draws'], data_hash['data'][17]['loss'], data_hash['data'][17]['gd'], data_hash['data'][17]['pts'])
+        body += "\n|18|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][18]['team'], data_hash['data'][18]['played'], data_hash['data'][18]['wins'], data_hash['data'][18]['draws'], data_hash['data'][18]['loss'], data_hash['data'][18]['gd'], data_hash['data'][18]['pts'])
+        body += "\n|19|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][19]['team'], data_hash['data'][19]['played'], data_hash['data'][19]['wins'], data_hash['data'][19]['draws'], data_hash['data'][19]['loss'], data_hash['data'][19]['gd'], data_hash['data'][19]['pts'])
+        body += "\n|20|{0}|{1}|{2}|{3}|{4}|{5}|{6}|".format(data_hash['data'][20]['team'], data_hash['data'][20]['played'], data_hash['data'][20]['wins'], data_hash['data'][20]['draws'], data_hash['data'][20]['loss'], data_hash['data'][20]['gd'], data_hash['data'][20]['pts'])
         body += "\n\n[Source](%s)" % data_hash['source']
-	print body
         return body
 
     def fix_standings(self, text):
@@ -305,7 +301,6 @@ class Soccer(object):
         body += "\n|%s (UTC) - %s vs. %s |" % (data_hash['fixtures'][1]['time'], data_hash['fixtures'][1]['team_l'], data_hash['fixtures'][1]['team_r'])
         body += "\n|%s (UTC) - %s vs. %s |" % (data_hash['fixtures'][2]['time'], data_hash['fixtures'][2]['team_l'], data_hash['fixtures'][2]['team_r'])
         body += "\n\n[Source](%s)" % data_hash['source']
-        print body
         return body
 
     def create_sidebar(self):
