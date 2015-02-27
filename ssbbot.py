@@ -137,6 +137,10 @@ class Soccer(object):
           'Inter': '[Inter](/r/FCInterMilan)',
           'AS Roma': '[AS Roma](/r/ASRoma)',
           'Parma': '[Parma](/r/parmafc)',
+          'Hellas Verona': '[Hellas Verona](/r/HellasVerona)',
+          'Chievo Verona': '[Chievo Verona](/r/ChievoVerona)',
+          'Genoa': '[Genoa](/r/GenoaCFC)',
+          'Torino': '[Torino](/r/IlToro)',
           'Null' : ''}
 
         if self.fix == 'y':
