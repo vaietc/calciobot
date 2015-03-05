@@ -141,6 +141,7 @@ class Soccer(object):
           'Chievo Verona': '[Chievo Verona](/r/ChievoVerona)',
           'Genoa': '[Genoa](/r/GenoaCFC)',
           'Torino': '[Torino](/r/IlToro)',
+          'Atalanta': '[Atalanta](/r/Atalanta)',
           'Null' : ''}
 
         if self.fix == 'y':
