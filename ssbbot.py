@@ -154,12 +154,14 @@ class Soccer(object):
             return text
 
     def scrape_top_scorer(self):
+        global rawdata
+        rawdata = []
         link = 'http://www.soccerstats.com/scorers.asp?league=italy'
         w = urllib2.urlopen(link)
         soup = BeautifulSoup(w.read())
 
         #Find the division table
-        for table in soup.findAll('table', { "id" : "btable" }):
+        for table in soup.findAll('table', { "class" : "sortable" }):
             rawdata = table
 
         vlist = []
@@ -168,6 +170,7 @@ class Soccer(object):
 
         #Make list of cells within a list of rows
         rawdata_list = [tr.findAll('td') for tr in rawdata.findAll('tr')]
+
         #Text only version of rawdata_list
         for row in rawdata_list:
             vlist.append([cell.text for cell in row])
