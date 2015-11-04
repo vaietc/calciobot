@@ -325,8 +325,8 @@ class Soccer(object):
         #Sidebar with updated tables - +lucky_guess+sidebar_list[6]
         sidebar = (sidebar_list[0]+standings_a+sidebar_list[2])
         sidebar += (sidebar_list[3]+fix_goalscorers)
-        sidebar += (sidebar_list[4]+euro_standings_table)
-        sidebar += (sidebar_list[6]+euro_fixtures_table)
+        # sidebar += (sidebar_list[4]+euro_standings_table)
+        # sidebar += (sidebar_list[6]+euro_fixtures_table)
         sidebar += (sidebar_list[7]+sidebar_list[8]+sidebar_list[9])
         sidebar += "\nLast Updated: " + updated + "\n\n"
         #Fix characters in sidebar
@@ -357,14 +357,14 @@ print 'Generating Top Scorer Table...'
 top_scorer_table = sb.generate_top_scorer_tables(top_scorer_list)
 print 'Fixing Table...'
 fix_goalscorers = sb.fix_standings(top_scorer_table)
-print 'Scraping Euro Stats...'
-euro_standings_list = sb.scrape_euro_standings()
-print 'Generating Euro Standings Table...'
-euro_standings_table = sb.generate_euro_standings_tables(euro_standings_list)
-print 'Scraping Euro Fixtures...'
-euro_fixtures_list = sb.scrape_euro_fixtures()
-print 'Generating Euro Fixtures Table...'
-euro_fixtures_table = sb.generate_euro_fixtures_tables(euro_fixtures_list)
+# print 'Scraping Euro Stats...'
+# euro_standings_list = sb.scrape_euro_standings()
+# print 'Generating Euro Standings Table...'
+# euro_standings_table = sb.generate_euro_standings_tables(euro_standings_list)
+# print 'Scraping Euro Fixtures...'
+# euro_fixtures_list = sb.scrape_euro_fixtures()
+# print 'Generating Euro Fixtures Table...'
+# euro_fixtures_table = sb.generate_euro_fixtures_tables(euro_fixtures_list)
 print 'Grabbing Sidebar Template...'
 sidebar = sb.create_sidebar()
 print 'Updating Sidebar...'
