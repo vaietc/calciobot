@@ -1,5 +1,5 @@
-# calciobot by ubercl0ud
-Simple reddit bot to update the sidebar with Serie A live table, and top scorers.  Nothing really fancy. 
+# calciobot by rtaibah 
+Simple reddit bot to update the sidebar with Serie A & Serie B live table, and top scorers.  Nothing really fancy. 
 
 ## How to
 * Copy config.ini.default to config.ini
@@ -53,4 +53,5 @@ o* Then just create a cronjob to run the script at specific intervals
 
 
 ## Credits
-This script was heavily modified from the hockey subreddit from HockeyBotS
+- This script was heavily modified from ubercl0ud's original Calciobot and Spiz Trezbot
+

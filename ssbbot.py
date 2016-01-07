@@ -230,7 +230,6 @@ class Soccer(object):
         body += "|" + str(data_hash['data'][9][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][9][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][9][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][9][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
         body += "|" + str(data_hash['data'][10][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][10][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][10][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][10][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
         body += "\n\n[Source](%s)" % data_hash['source']
-        print(body)
 
         return body
 
