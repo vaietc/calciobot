@@ -1,6 +1,7 @@
 #HockeyBotS v1.1.0 by /u/TeroTheTerror
 ## -- coding: utf-8 --
 
+import requests
 import json
 import mwparserfromhell
 import urllib.parse
@@ -28,8 +29,9 @@ class Soccer(object):
             self.subreddit = sys.argv[1]
         else:
             self.subreddit = Config.get("userinfo", "subreddit")
-        
+     
         self.userAgent = Config.get("userinfo", "userAgent")
+        self.mashapeKey = Config.get("userinfo", "mashapekey")
         self.fix = 'y'
 
 
@@ -124,6 +126,7 @@ class Soccer(object):
           'Genoa': 'Genoa',
           'Inter Milan': 'Inter',
           'AC Milan': 'AC Milan',
+          'Milan': 'AC Milan',
           'Udinese': 'Udinese',
           'Hellas Verona': 'Hellas Verona',
           'Fiorentina': 'Fiorentina',
@@ -141,7 +144,6 @@ class Soccer(object):
           'Lazio': 'Lazio',
           'Lazio AS Roma': 'Lazio',
           'Lazio': 'Lazio',
-          'Roma': 'AS Roma',
           'SSC Napoli': 'Napoli',
           'SSC Napoli': 'Napoli',
           'Inter': 'Inter',
@@ -157,9 +159,9 @@ class Soccer(object):
           'Palermo': '[Palermo](/r/Palermo)',
           'Cagliari': '[Cagliari](/r/Casteddu)',
           'Lazio': '[Lazio](/r/Lazio)',
-          'Napoli': '[SSC Napoli](/r/SSCNapoli)',
+          'Napoli': '[Napoli](/r/SSCNapoli)',
           'Inter': '[Inter](/r/FCInterMilan)',
-          'AS Roma': '[AS Roma](/r/ASRoma)',
+          'Roma': '[Roma](/r/ASRoma)',
           'Parma': '[Parma](/r/parmafc)',
           'Hellas Verona': '[Hellas Verona](/r/HellasVerona)',
           'Chievo Verona': '[Chievo Verona](/r/ChievoVerona)',
@@ -177,62 +179,30 @@ class Soccer(object):
         else:
             return text
 
-    def scrape_top_scorer(self):
-        global rawdata
-        rawdata = []
-        link = 'http://www.soccerstats.com/scorers.asp?league=italy'
-        w = urllib.request.urlopen(link)
-        soup = BeautifulSoup(w.read(),"html.parser")
-
-        #Find the division table
-        for table in soup.findAll('table', cellpadding="2", cellspacing="0"):
-            rawdata = table
-
-        vlist = []
-        vlist1 = []
-        vlist2 = []
-
-        #Make list of cells within a list of rows
-        rawdata_list = [tr.findAll('td') for tr in rawdata.findAll('tr')]
-
-        #Text only version of rawdata_list
-        for row in rawdata_list:
-            vlist.append([cell.text for cell in row])
-        #Get rid of problematic characters
-        for i in vlist:
-            vlist1.append([val.replace(u'\xa0', u' ') for val in i])
-
-        for i in vlist1:
-            vlist2.append([val.replace(u'\xe9', u'e') for val in i])
-
-        for i in vlist1:
-            vlist2.append([val.replace(u'\xf3', u'o') for val in i])
-
-        w.close()
+    def scrape_top_scorer(self): 
+        api = 'https://sportsop-soccer-sports-open-data-v1.p.mashape.com/v1/leagues/serie-a/seasons/16-17/topscorers'
+        headers = { 'X-Mashape-Key' : self.mashapeKey, 'Accept' : 'application/json' }
+        response = requests.get(api, headers=headers)
+        raw_data = response.json()
         data = {}
-        data['source'] = link
-        data['data'] = vlist2
+        data['topscorers'] = []
+        data['source'] = 'https://market.mashape.com/sportsop/soccer-sports-open-data'
+        if (raw_data['data']['statusCode'] == '200'):
+            topscorers = raw_data['data']['topscorers']
+            for i in range(0, min(len(topscorers), 10)): # Grab up to 10 top scorers.
+                data['topscorers'].append({ 'player' : topscorers[i]['fullname'], 'team': topscorers[i]['team'], 'goals': topscorers[i]['goals'], 'penalties': topscorers[i]['penalties'] })
+        else:
+            raise RuntimeError("Failed to fetch top scorers from mashape " + str(raw_data))
         return data
-
+ 
     def generate_top_scorer_tables(self, data_hash):
-        #Time/Date stamp
-        #Compiling the table
         body = "\n|Player|Team|Goals(Penalties)"
         body += "\n|:--|:--|:--|\n"
-        body += "|" + str(data_hash['data'][1][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][1][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][1][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][1][4].replace('\n', ' ').replace('\r', '')) +  " ) \n"
-        body += "|" + str(data_hash['data'][2][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][2][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][2][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][2][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
-        body += "|" + str(data_hash['data'][3][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][3][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][3][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][3][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
-        body += "|" + str(data_hash['data'][4][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][4][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][4][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][4][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
-        body += "|" + str(data_hash['data'][5][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][5][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][5][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][5][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
-        body += "|" + str(data_hash['data'][6][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][6][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][6][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][6][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
-        body += "|" + str(data_hash['data'][7][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][7][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][7][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][7][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
-        body += "|" + str(data_hash['data'][8][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][8][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][8][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][8][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
-        body += "|" + str(data_hash['data'][9][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][9][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][9][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][9][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
-        body += "|" + str(data_hash['data'][10][0].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][10][1].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['data'][10][3].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['data'][10][4].replace('\n', ' ').replace('\r', '')) + " ) \n"
+        for i in range(0, len(data_hash['topscorers'])):
+            body += "|" + str(data_hash['topscorers'][i]['player'].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['topscorers'][i]['team'].replace('\n', ' ').replace('\r', '')) + " | " + str(data_hash['topscorers'][i]['goals'].replace('\n', ' ').replace('\r', '')) + " ( " + str(data_hash['topscorers'][i]['penalties'].replace('\n', ' ').replace('\r', '')) +  " ) \n"
         body += "\n\n[Source](%s)" % data_hash['source']
-
         return body
-
+ 
     def create_sidebar(self):
         updated = datetime.datetime.now().strftime('%b %d, %Y at %I:%M%p')
         #To fix character glitch when grabbing the sidebar
@@ -267,9 +237,9 @@ class Soccer(object):
 sb = Soccer()
 
 print('Scraping Standings for Serie A...')
-serie_a_table = sb.get_page('Template:2015–16_Serie_A_table')
+serie_a_table = sb.get_page('Template:2016–17_Serie_A_table')
 print('Scraping Standings for Serie B...')
-serie_b_table = sb.get_page('2015–16_Serie_B')
+serie_b_table = sb.get_page('2016–17_Serie_B')
 print('Generating Table...')
 serie_a_md = sb.parse_table (serie_a_table)
 serie_b_md = sb.parse_table (serie_b_table)

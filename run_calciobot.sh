@@ -4,7 +4,7 @@
 UPDATE_FROM_GIT=1	
 
 # Update with the directory where the calciobot is location
-SCRIPTDIR="${HOME}/calciobot"
+SCRIPTDIR="."
 
 # Do not edit below this line, unless you know what you are doing
 SCRIPTLOG="${SCRIPTDIR}/ssbbot.log"
@@ -29,5 +29,5 @@ else
   echo -e "Skipping syncing with git"
 fi
 
-python ${SCRIPTNAME} ${SUBREDDIT} >> ${SCRIPTLOG}
+python3 ${SCRIPTNAME} ${SUBREDDIT} >> ${SCRIPTLOG}
 echo -e "\n# Ended: `date`\n########################" >> ${SCRIPTLOG}

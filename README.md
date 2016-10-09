@@ -5,6 +5,7 @@ Simple reddit bot to update the sidebar with Serie A & Serie B live table, and t
 * Copy config.ini.default to config.ini
 * Set the following:
 ```
+mashapekey: <your_mashape_key>
 username: <your bot's username>
 password: <your bot's password>
 subreddit: <your subreddit without the /r/>
@@ -15,6 +16,7 @@ userAgent: Soccer_Bot_S/v1.1.0 by <your bot's username>
 * NOTE: setting the subreddit in this file makes this the default subreddit in the event that you do not pass an argument to the script show later on
 
 ```
+mashapekey: somekey
 username: calciobot
 password: somepassword
 subreddit: beta_calcio
@@ -30,6 +32,7 @@ userAgent: Soccer_Bot_S/v1.1.0 by calciobot
 python
 python-pip (to help install the python modules)
 beautifulsoup4 (Screen-scraping library)
+python-requests (HTTP request helper)
 praw (The Python Reddit Api Wrapper)
 ```
 
